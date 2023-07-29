@@ -1,0 +1,50 @@
+{
+    "name": "@rychusoft/spawn-promise",
+    "version": "1.0.0",
+    "description": "TS written promise wrapper for node's child_process. It doesn't store/cache any stdio.",
+    "author": "Rychu",
+    "license": "MIT",
+    "homepage": "https://github.com/Rychu-Pawel/spawn-promise#readme",
+    "bugs": {
+        "url": "https://github.com/Rychu-Pawel/spawn-promise/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Rychu-Pawel/spawn-promise.git"
+    },
+    "keywords": [
+        "spawn",
+        "promise",
+        "child_process",
+        "async",
+        "await"
+    ],
+    "main": "dist/src/index.js",
+    "type": "module",
+    "files": [
+        "dist/src"
+    ],
+    "scripts": {
+        "test": "npm run build && ava",
+        "eslint": "eslint src test",
+        "clean": "del-cli --force dist",
+        "build": "npm run clean && tsc"
+    },
+    "devDependencies": {
+        "@types/node": "^20.4.5",
+        "@tsconfig/node16-strictest-esm": "^1.0.3",
+        "@typescript-eslint/eslint-plugin": "^6.0.0",
+        "@typescript-eslint/parser": "^6.0.0",
+        "ava": "^5.2.0",
+        "del-cli": "^5.0.0",
+        "eslint": "^8.20.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "typescript": "^5.1.6"
+    },
+    "ava": {
+        "files": [
+            "dist/test/**/*.spec.js"
+        ]
+    }
+}

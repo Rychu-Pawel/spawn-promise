@@ -1,0 +1,35 @@
+{
+    "extends": "@tsconfig/node16-strictest-esm/tsconfig.json",
+    "compilerOptions": {
+        "lib": [
+            "ES2021",
+            "dom"
+        ],
+        "sourceMap": true,
+        "jsx": "react",
+        "pretty": true,
+        "stripInternal": true,
+        "noImplicitThis": true,
+        "noEmitOnError": true,
+        "noImplicitAny": true,
+        "baseUrl": ".",
+        "outDir": "dist",
+        "declaration": true,
+        "strictNullChecks": true,
+        "exactOptionalPropertyTypes": false,
+        "ignoreDeprecations": "5.0",
+        "noPropertyAccessFromIndexSignature": false, // this conflicts with ESLint dot-notation rule
+        "paths": {
+            "*": [
+                "node_modules/*"
+            ]
+        },
+    },
+    "include": [
+        "src/**/*",
+        "test/**/*"
+    ],
+    "exclude": [
+        "dist"
+    ]
+}
