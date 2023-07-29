@@ -1,4 +1,4 @@
-import { spawn as spawnNode } from "node:child_process";
+import { spawn as spawnNode } from "child_process";
 
 import type { SpawnOptions, SpawnReturnValue } from "./types";
 
@@ -58,8 +58,10 @@ function consoleError(data: string | Buffer | Error) {
 function getMessage(data: string | Buffer | Error) {
     if (Buffer.isBuffer(data))
         return data.toString(`utf8`);
+
     if (typeof data === `string`)
         return data;
+
     return data.message;
 }
 
