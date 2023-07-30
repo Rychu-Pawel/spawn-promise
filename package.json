@@ -1,6 +1,6 @@
 {
     "name": "@rychu-pawel/spawn-promise",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "TS written promise wrapper for node's child_process. It doesn't store/cache any stdio.",
     "author": "Rychu",
     "license": "MIT",
@@ -26,9 +26,12 @@
     ],
     "scripts": {
         "test": "npm run build && ava",
+        "test:ci": "ava",
         "eslint": "eslint src test",
+        "eslint:ci": "npm run eslint",
         "clean": "del-cli --force dist",
-        "build": "npm run clean && tsc"
+        "build": "npm run clean && tsc",
+        "build:ci": "npm run build"
     },
     "devDependencies": {
         "@tsconfig/node16-strictest-esm": "^1.0.3",
