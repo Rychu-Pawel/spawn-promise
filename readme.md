@@ -1,4 +1,4 @@
-# spawn-async
+# spawn-promise
 
 TS written promise wrapper for node's child_process. It doesn't store/cache any stdio. By default logs stdout to `console.log` and stderr to `console.error`.
 
