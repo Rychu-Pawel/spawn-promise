@@ -1,6 +1,6 @@
 import { spawn as spawnNode } from "child_process";
 
-import type { SpawnOptions, SpawnReturnValue } from "./types";
+import type { SpawnError, SpawnOptions, SpawnReturnValue } from "./types";
 
 const spawn = (command: string, args: readonly string[] = [], options: SpawnOptions = {}): SpawnReturnValue => {
     const childProcess = spawnNode(command, args, options);
@@ -8,7 +8,7 @@ const spawn = (command: string, args: readonly string[] = [], options: SpawnOpti
     const promise = new Promise<number>((resolve, reject) => {
         let error: Error | null = null;
 
-        childProcess.on(`error`, (err: Error) => {
+        childProcess.once(`error`, (err: Error) => {
             error = err;
         });
 
@@ -26,15 +26,28 @@ const spawn = (command: string, args: readonly string[] = [], options: SpawnOpti
                 consoleError(data);
         });
 
-        childProcess.on(`close`, code => {
+        childProcess.once(`close`, (code, signal) => {
             if (code === 0)
                 resolve(code);
 
-            if (error !== null)
-                reject(error);
+            if (error !== null) {
+                const enrichedError = enrichError(error, code, signal);
+                reject(enrichedError);
+            }
 
-            if (code !== null)
-                reject(new Error(`Child process exited with code ${code}`));
+            if (code !== null) {
+                error = new Error(`Child process exited with code ${code}`);
+                const enrichedError = enrichError(error, code, signal);
+
+                reject(enrichedError);
+            }
+
+            if (signal !== null) {
+                error = new Error(`Child process exited due to the ${signal} signal`);
+                const enrichedError = enrichError(error, code, signal);
+
+                reject(enrichedError);
+            }
 
             resolve(0);
         });
@@ -63,6 +76,13 @@ function getMessage(data: string | Buffer | Error) {
         return data;
 
     return data.message;
+}
+
+function enrichError(error: Error, code: number | null, signal: NodeJS.Signals | null): SpawnError {
+    (error as SpawnError).exitCode = code;
+    (error as SpawnError).signal = signal;
+
+    return error as SpawnError;
 }
 
 export default spawn;

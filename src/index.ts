@@ -1,2 +1,4 @@
-export { default as spawn } from "./spawn.js";
-export { SpawnOptions, SpawnReturnValue } from "./types.js";
+import spawn from "./spawn.js";
+
+export default spawn;
+export { SpawnOptions, SpawnReturnValue, SpawnError } from "./types.js";

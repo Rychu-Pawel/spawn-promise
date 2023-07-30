@@ -6,3 +6,5 @@ export type SpawnOptions = SpawnNodeOptions & {
 }
 
 export type SpawnReturnValue = Promise<number> & { child: ChildProcess };
+
+export type SpawnError = Error & { exitCode: number | null, signal: NodeJS.Signals | null };

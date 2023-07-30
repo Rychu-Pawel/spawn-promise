@@ -117,6 +117,7 @@
             "error",
             "except-parens"
         ],
-        "no-console": "off"
+        "no-console": "off",
+        "no-param-reassign": "off"
     }
 }
