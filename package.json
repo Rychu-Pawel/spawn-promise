@@ -1,5 +1,5 @@
 {
-    "name": "@rychusoft/spawn-promise",
+    "name": "@rychu-pawel/spawn-promise",
     "version": "1.0.0",
     "description": "TS written promise wrapper for node's child_process. It doesn't store/cache any stdio.",
     "author": "Rychu",
