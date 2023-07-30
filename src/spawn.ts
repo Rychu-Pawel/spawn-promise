@@ -5,7 +5,7 @@ import type { SpawnOptions, SpawnReturnValue } from "./types";
 const spawn = (command: string, args: readonly string[] = [], options: SpawnOptions = {}): SpawnReturnValue => {
     const childProcess = spawnNode(command, args, options);
 
-    const promise = new Promise<void>((resolve, reject) => {
+    const promise = new Promise<number>((resolve, reject) => {
         let error: Error | null = null;
 
         childProcess.on(`error`, (err: Error) => {
@@ -28,7 +28,7 @@ const spawn = (command: string, args: readonly string[] = [], options: SpawnOpti
 
         childProcess.on(`close`, code => {
             if (code === 0)
-                resolve();
+                resolve(code);
 
             if (error !== null)
                 reject(error);
@@ -36,7 +36,7 @@ const spawn = (command: string, args: readonly string[] = [], options: SpawnOpti
             if (code !== null)
                 reject(new Error(`Child process exited with code ${code}`));
 
-            resolve();
+            resolve(0);
         });
     });
 

@@ -5,4 +5,4 @@ export type SpawnOptions = SpawnNodeOptions & {
     stderrListener?: (data: string | Buffer) => void,
 }
 
-export type SpawnReturnValue = Promise<void> & { child: ChildProcess };
+export type SpawnReturnValue = Promise<number> & { child: ChildProcess };
