@@ -5,21 +5,14 @@ import test from "ava";
 
 import spawn from "../src/index.js";
 
-import type { SpawnError, SpawnReturnValue } from "../src/index.js";
+import type { SpawnError } from "../src/index.js";
 
 test.serial(`Successfully spawns`, async t => {
     // Arrange
-    let exitCode = -1;
+    const sutMethod = async () => await spawn(`node`, [`-v`]);
 
-    const sutMethod = async () => {
-        exitCode = await spawn(`node`, [`-v`]);
-    };
-
-    // Act
+    // Act & Assert
     await t.notThrowsAsync(sutMethod);
-
-    // Assert
-    t.is(exitCode, 0);
 });
 
 test.serial(`Returns child inside promise`, async t => {
@@ -28,30 +21,25 @@ test.serial(`Returns child inside promise`, async t => {
 
     // Act
     const child = promise.child;
-    const exitCode = await promise;
+    await promise;
 
     // Assert
     t.truthy(child);
     t.true(child instanceof ChildProcess);
-    t.is(exitCode, child.exitCode || 0);
 });
 
 test.serial(`Resolves when exit code and signal are null`, async t => {
     // Arrange
-    let promise: SpawnReturnValue | undefined;
-    let exitCode = -1;
+    let promise: ReturnType<typeof spawn> | undefined;
 
     const sutMethod = async () => {
         promise = spawn(`node`, [`-v`]);
         promise.child.emit(`close`, null, null);
-        exitCode = await promise;
+        await promise;
     };
 
-    // Act
+    // Act & Assert
     await t.notThrowsAsync(sutMethod);
-
-    // Assert
-    t.is(exitCode, 0);
 });
 
 test.serial(`Spawns with correct parameters`, async t => {
@@ -100,7 +88,7 @@ test.serial(`Rejects with correct signal`, async t => {
 
 test.serial(`Rejects with correct exit code`, async t => {
     // Arrange
-    let promise: SpawnReturnValue | undefined;
+    let promise: ReturnType<typeof spawn> | undefined;
 
     const scriptPath = path.join(process.cwd(), `test/commands/exitNonZero.sh`);
 

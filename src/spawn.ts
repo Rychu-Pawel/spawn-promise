@@ -1,34 +1,34 @@
-import { spawn as spawnNode } from "child_process";
+import { ChildProcess, spawn as spawnNode } from "child_process";
 
-import type { SpawnError, SpawnOptions, SpawnReturnValue } from "./types";
+import type { SpawnError, SpawnOptions } from "./types";
 
-const spawn = (command: string, args: readonly string[] = [], options: SpawnOptions = {}): SpawnReturnValue => {
-    const childProcess = spawnNode(command, args, options);
+const spawn = (command: string, args: readonly string[] = [], options: SpawnOptions = {}): Promise<void> & { child: ChildProcess } => {
+    const child = spawnNode(command, args, options);
 
-    const promise = new Promise<number>((resolve, reject) => {
+    const promise = new Promise<void>((resolve, reject) => {
         let error: Error | null = null;
 
-        childProcess.once(`error`, (err: Error) => {
+        child.once(`error`, (err: Error) => {
             error = err;
         });
 
-        childProcess.stdout?.on(`data`, (data: string | Buffer) => {
+        child.stdout?.on(`data`, (data: string | Buffer) => {
             if (options.stdoutListener)
                 options.stdoutListener(data);
             else
                 consoleLog(data);
         });
 
-        childProcess.stderr?.on(`data`, (data: string | Buffer) => {
+        child.stderr?.on(`data`, (data: string | Buffer) => {
             if (options.stderrListener)
                 options.stderrListener(data);
             else
                 consoleError(data);
         });
 
-        childProcess.once(`close`, (code, signal) => {
+        child.once(`close`, (code, signal) => {
             if (code === 0)
-                resolve(code);
+                resolve();
 
             if (error !== null) {
                 const enrichedError = enrichError(error, code, signal);
@@ -49,13 +49,11 @@ const spawn = (command: string, args: readonly string[] = [], options: SpawnOpti
                 reject(enrichedError);
             }
 
-            resolve(0);
+            resolve();
         });
     });
 
-    (promise as SpawnReturnValue).child = childProcess;
-
-    return promise as SpawnReturnValue;
+    return Object.assign(promise, { child });
 };
 
 function consoleLog(data: string | Buffer) {
@@ -78,11 +76,8 @@ function getMessage(data: string | Buffer | Error) {
     return data.message;
 }
 
-function enrichError(error: Error, code: number | null, signal: NodeJS.Signals | null): SpawnError {
-    (error as SpawnError).exitCode = code;
-    (error as SpawnError).signal = signal;
-
-    return error as SpawnError;
+function enrichError(error: Error, exitCode: number | null, signal: NodeJS.Signals | null): SpawnError {
+    return Object.assign(error, { exitCode, signal });
 }
 
 export default spawn;
